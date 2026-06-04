@@ -1,0 +1,11 @@
+streamlit>=1.20.0
+emoji
+
+torch>=2.0.0
+transformers>=4.30.0
+safetensors>=0.3.1
+
+pyvi>=0.1.1
+
+pandas>=1.5.0
+numpy>=1.23.0
