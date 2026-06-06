@@ -102,30 +102,28 @@ class PhoBERT_ABSA_MultiHead(nn.Module):
 # ===========================================================================
 # 3. HÀM LOAD MODEL DÙNG CHÍNH XÁC CONFIG 
 # ===========================================================================
-def load_model(config: dict, model_path: str = None, device: torch.device = None):
-    """
-    Load mô hình sử dụng trực tiếp dict được đọc từ file config.json.
-    """
-    if device is None:
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+def load_model(model_path: str, device=None):
+    import json, os
+    from safetensors.torch import load_file
 
-    # Gọi chính xác key model_name_or_path từ file config
+    if device is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    config_path = os.path.join(model_path, "config_absa.json")
+    with open(config_path, "r", encoding="utf-8") as f:
+        config = json.load(f)
+
     model = PhoBERT_ABSA_MultiHead(
-        model_name_or_path=config["model_name_or_path"], 
+        model_name_or_path=config["model_name_or_path"],
         num_aspects=config["num_aspects"],
         num_classes=config["num_classes"],
         dropout_rate=config["dropout_rate"],
         num_dropout_samples=config["num_dropout_samples"],
     )
 
-    # Đọc trọng số an toàn từ file model.safetensors
-    if model_path is not None and os.path.exists(model_path):
-        state_dict = load_file(model_path)
-        model.load_state_dict(state_dict)
-        print(f"Đã load model thành công từ: {model_path}")
-    else:
-        print("Cảnh báo: Chưa nạp file trọng số model.safetensors.")
-
+    weights_path = os.path.join(model_path, "model.safetensors")
+    state_dict = load_file(weights_path)
+    model.load_state_dict(state_dict)
     model.to(device)
     model.eval()
     return model
