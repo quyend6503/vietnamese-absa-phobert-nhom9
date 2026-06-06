@@ -1,0 +1,29 @@
+{
+    "model_name_or_path": "vinai/phobert-large",
+    "max_length": 256,
+    "num_aspects": 12,
+    "num_classes": 4,
+    "label_cols": [
+        "AMBIENCE#GENERAL",
+        "DRINKS#PRICES",
+        "DRINKS#QUALITY",
+        "DRINKS#STYLE&OPTIONS",
+        "FOOD#PRICES",
+        "FOOD#QUALITY",
+        "FOOD#STYLE&OPTIONS",
+        "LOCATION#GENERAL",
+        "RESTAURANT#GENERAL",
+        "RESTAURANT#MISCELLANEOUS",
+        "RESTAURANT#PRICES",
+        "SERVICE#GENERAL"
+    ],
+    "dropout_rate": 0.2,
+    "num_dropout_samples": 5,
+    "sentiment_labels": ["None", "Positive", "Negative", "Neutral"],
+    "sentiment_map": {
+        "0": "Không đề cập",
+        "1": "Tích cực",
+        "2": "Tiêu cực",
+        "3": "Trung lập"
+    }
+}
