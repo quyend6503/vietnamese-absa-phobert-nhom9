@@ -2,6 +2,7 @@
 
 import torch
 import torch.nn.functional as F
+# pyrefly: ignore [missing-import]
 from transformers import AutoTokenizer
 
 from models.phobert_model import load_model
@@ -18,17 +19,16 @@ class ABSAPredictor:
         self.tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
         self.model = load_model(MODEL_PATH, device=self.device)
 
-    def predict(self, raw_text: str) -> list:
+    def _run_inference(self, raw_text: str):
         """
-        Nhận câu đánh giá thô → trả về danh sách các aspect được đề cập
+        Chạy inference và trả về (probs, preds) cho tất cả 12 aspect.
+        probs shape: (12, 4)  |  preds shape: (12,)
         """
         if not raw_text or not raw_text.strip():
-            return []
+            return None, None
 
-        # Bước 1: Tiền xử lý (ViTokenizer)
         processed = preprocess_text(raw_text)
 
-        # Bước 2: Tokenize
         encoding = self.tokenizer(
             processed,
             max_length=MAX_LEN,
@@ -39,16 +39,23 @@ class ABSAPredictor:
         input_ids      = encoding["input_ids"].to(self.device)
         attention_mask = encoding["attention_mask"].to(self.device)
 
-        # Bước 3: Dự đoán
         with torch.no_grad():
             outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
-            logits  = outputs["logits"]  # shape: (1, 12, 4)
+            logits  = outputs["logits"]  # (1, 12, 4)
 
-        # Bước 4: Softmax + Argmax → lấy nhãn có xác suất cao nhất
         probs = F.softmax(logits, dim=-1).cpu().numpy()[0]  # (12, 4)
         preds = probs.argmax(axis=-1)                        # (12,)
+        return probs, preds
 
-        # Bước 5: Trả kết quả, bỏ qua nhãn 0 (Không đề cập)
+    def predict(self, raw_text: str) -> list:
+        """
+        Trả về danh sách các aspect ĐƯỢC ĐỀ CẬP (bỏ nhãn 0).
+        Tương thích ngược với code cũ.
+        """
+        probs, preds = self._run_inference(raw_text)
+        if probs is None:
+            return []
+
         results = []
         for i, aspect in enumerate(LABEL_COLS):
             pred_id = int(preds[i])
@@ -58,7 +65,33 @@ class ABSAPredictor:
                 "aspect_en":  aspect,
                 "aspect_vi":  ASPECT_VI_MAP[aspect],
                 "sentiment":  SENTIMENT_MAP[pred_id],
+                "sentiment_id": pred_id,
                 "confidence": round(float(probs[i, pred_id]) * 100, 2)
             })
+        return results
 
+    def predict_full(self, raw_text: str) -> list:
+        """
+        Trả về TẤT CẢ 12 aspect (kể cả nhãn 0 — Không đề cập).
+        Dùng cho Streamlit để hiển thị đầy đủ 12 card.
+        """
+        probs, preds = self._run_inference(raw_text)
+        if probs is None:
+            return []
+
+        results = []
+        for i, aspect in enumerate(LABEL_COLS):
+            pred_id = int(preds[i])
+            results.append({
+                "aspect_en":    aspect,
+                "aspect_vi":    ASPECT_VI_MAP[aspect],
+                "sentiment":    SENTIMENT_MAP[pred_id],
+                "sentiment_id": pred_id,                            # 0/1/2/3
+                "confidence":   round(float(probs[i, pred_id]) * 100, 2),
+                "prob_none":    round(float(probs[i, 0]) * 100, 2),
+                "prob_pos":     round(float(probs[i, 1]) * 100, 2),
+                "prob_neg":     round(float(probs[i, 2]) * 100, 2),
+                "prob_neu":     round(float(probs[i, 3]) * 100, 2),
+                "mentioned":    pred_id != 0
+            })
         return results

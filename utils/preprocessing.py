@@ -1,5 +1,6 @@
 # utils/preprocessing.py
 
+# pyrefly: ignore [missing-import]
 from pyvi import ViTokenizer
 
 

@@ -1,29 +1,21 @@
 {
-    "model_name_or_path": "vinai/phobert-large",
-    "max_length": 256,
-    "num_aspects": 12,
-    "num_classes": 4,
-    "label_cols": [
-        "AMBIENCE#GENERAL",
-        "DRINKS#PRICES",
-        "DRINKS#QUALITY",
-        "DRINKS#STYLE&OPTIONS",
-        "FOOD#PRICES",
-        "FOOD#QUALITY",
-        "FOOD#STYLE&OPTIONS",
-        "LOCATION#GENERAL",
-        "RESTAURANT#GENERAL",
-        "RESTAURANT#MISCELLANEOUS",
-        "RESTAURANT#PRICES",
-        "SERVICE#GENERAL"
-    ],
-    "dropout_rate": 0.2,
-    "num_dropout_samples": 5,
-    "sentiment_labels": ["None", "Positive", "Negative", "Neutral"],
-    "sentiment_map": {
-        "0": "Không đề cập",
-        "1": "Tích cực",
-        "2": "Tiêu cực",
-        "3": "Trung lập"
-    }
+  "model_type": "roberta",
+  "architectures": ["RobertaModel"],
+  "attention_probs_dropout_prob": 0.1,
+  "bos_token_id": 0,
+  "eos_token_id": 2,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 4096,
+  "layer_norm_eps": 1e-05,
+  "max_position_embeddings": 258,
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "pad_token_id": 1,
+  "position_embedding_type": "absolute",
+  "type_vocab_size": 1,
+  "use_cache": true,
+  "vocab_size": 64001
 }

@@ -113,6 +113,10 @@ def load_model(model_path: str, device=None):
     with open(config_path, "r", encoding="utf-8") as f:
         config = json.load(f)
 
+    print("CONFIG PATH:", config_path)
+    print("CONFIG:", config)
+    print("MODEL NAME:", config["model_name_or_path"])
+
     model = PhoBERT_ABSA_MultiHead(
         model_name_or_path=config["model_name_or_path"],
         num_aspects=config["num_aspects"],
