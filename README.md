@@ -39,28 +39,31 @@ Hệ thống có khả năng:
 vietnamese-absa-phobert-nhom9/
 │
 ├── app.py
-├── requirements.txt
 ├── README.md
+├── requirements.txt
 │
 ├── models/
 │   ├── phobert_model.py
+│   │
 │   └── best_model/
-│       ├── model.safetensors
-│       └── config_absa.json
+│       ├── model.safetensors  
+│       ├── config_absa.json     
+│       ├── config.json 
+│       ├── tokenizer.json
+│       ├── tokenizer_config.json
+│       ├── special_tokens_map.json
+│       ├── added_tokens.json
+│       ├── vocab.txt
+│       └── bpe.codes
 │
 ├── utils/
-│   ├── constants.py
-│   ├── predictor.py
-│   └── preprocessing.py
+│   ├── constants.py                
+│   ├── predictor.py                
+│   └── preprocessing.py          
 │
-├── outputs/
-│   └── predictions.csv
-│
-├── tokenizer.json
-├── tokenizer_config.json
-├── special_tokens_map.json
-├── vocab.txt
-└── config.json
+└── outputs/
+    └── predictions.csv        
+
 ```
 
 ---
