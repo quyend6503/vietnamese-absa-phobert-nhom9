@@ -232,6 +232,15 @@ hr { border-color: rgba(255,255,255,0.08) !important; }
     color: #a5b4fc;
     font-size: 0.9rem;
 }
+
+/* ── Spinner text & icon ── */
+[data-testid="stSpinner"] {
+    color: #ffffff !important;
+}
+[data-testid="stSpinner"] * {
+    color: #ffffff !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -360,10 +369,10 @@ with tab1:
     col_input, col_result = st.columns([1, 1], gap="large")
 
     with col_input:
-        st.markdown("#### ✍️ Nhập câu review tiếng Việt")
+        st.markdown("#### ✍️ Nhập đánh giá tiếng Việt")
 
         # Câu mẫu nhanh — đặt TRƯỚC text_area để preset kịp áp dụng
-        st.markdown("**💡 Thử ngay với câu mẫu:**")
+        st.markdown("**💡 Thử ngay với đánh giá mẫu:**")
         samples = {
             "🍕 Tích cực tổng thể": "Quán này thực sự tuyệt vời! Đồ ăn ngon, không gian đẹp và nhân viên phục vụ rất nhiệt tình.",
             "😤 Tiêu cực dịch vụ":  "Thức ăn bình thường nhưng nhân viên thái độ rất tệ, chờ mãi không được phục vụ.",
